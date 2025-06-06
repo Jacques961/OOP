@@ -2,65 +2,64 @@ import datetime
 
 class DeliveryItem:
 
-    __serialGenerator = 1000 # Private Static Variable
-    __serialNumber = __serialGenerator
+    __serialGenerator = 999 # Private Static Variable
     
     # class methods
     @classmethod
     # prvt since the serial number is not accessed outside the class, this method used below in the setSerialData()
     def __get_next_serial(cls):
         cls.__serialGenerator += 1
-        return cls.__serialNumber
+        return cls.__serialGenerator
     
     
     # instance methods   
-    def __init__(self, senderName: str = None, receiverName: str = None, senderPostalCode: int = 10000, 
-                 receiverPostalCode: int = 10000,cost: float = 2.0 , insurance: bool = False, status: str = 'R'):
-        self.setDeliveryItem(senderName, receiverName, senderPostalCode, receiverPostalCode, cost, insurance, status)
+    def __init__(self, __senderName: str = None, __receiverName: str = None, __senderPostalCode: int = 10000, 
+                 __receiverPostalCode: int = 10000, __cost: float = 2.0 , __insurance: bool = False):
+        self.setDeliveryItem(__senderName, __receiverName, __senderPostalCode, __receiverPostalCode, __cost, __insurance)
     
-    def setDeliveryItem(self, senderName: str = None, receiverName: str = None, senderPostalCode: int = 10000, 
-                 receiverPostalCode: int = 10000,cost: float = 2.0 , insurance: bool = False, status: str = 'R'):
-        self.setSenderName(senderName)
-        self.setReceiverName(receiverName)
-        self.setReceiverPostalCode(receiverPostalCode)
-        self.setSenderPostalCode(senderPostalCode)
-        self.setCost(cost)
-        self.setInsurance(insurance)
-        self.setStatus(status)
+    def setDeliveryItem(self, __senderName: str = None, __receiverName: str = None, __senderPostalCode: int = 10000, 
+                 __receiverPostalCode: int = 10000, __cost: float = 2.0 , __insurance: bool = False):
+        self.setSenderName(__senderName)
+        self.setReceiverName(__receiverName)
+        self.setReceiverPostalCode(__receiverPostalCode)
+        self.setSenderPostalCode(__senderPostalCode)
+        self.setCost(__cost)
+        self.setInsurance(__insurance)
         self.setSerialData()
     
-    def setSenderName(self, senderName: str):
-        self.__senderName = senderName
+    def setSenderName(self, __senderName: str):
+        self.__senderName = __senderName
     
-    def setReceiverName(self, receiverName: str):
-        self.__receiverName = receiverName
+    def setReceiverName(self, __receiverName: str):
+        self.__receiverName = __receiverName
     
-    def setSenderPostalCode(self, senderPostalCode: int):
-        if senderPostalCode < 0:
+    def setSenderPostalCode(self, __senderPostalCode: int):
+        if __senderPostalCode < 0:
             self.__senderPostalCode = 10000
-        self.__senderPostalCode = senderPostalCode
+        self.__senderPostalCode = __senderPostalCode
     
-    def setReceiverPostalCode(self, receiverPostalCode: int):
-        if receiverPostalCode < 0:
+    def setReceiverPostalCode(self, __receiverPostalCode: int):
+        if __receiverPostalCode < 0:
             self.__receiverPostalCode = 10000
-        self.__receiverPostalCode = receiverPostalCode
+        self.__receiverPostalCode = __receiverPostalCode
         
-    def setCost(self, cost: float):
-        if cost < 0:
+    def setCost(self, __cost: float):
+        if __cost < 0:
             self.__cost = 2.0
-        self.__cost = cost
+        self.__cost = __cost
     
-    def setInsurance(self, insurance: bool):
-        self.__insurance = insurance
+    def setInsurance(self, __insurance: bool):
+        self.__insurance = __insurance
     
-    def setStatus(self, status: str):
-        if status not in ['A', 'D', 'R']:
+    def setStatus(self, __status: str):
+        if __status not in ['A', 'D', 'R']:
             self.__status = 'R'
-        self.__status = status
+        self.__status = __status
     
     def setSerialData(self):
         self.date = datetime.datetime.today()
         self.__serialNumber = DeliveryItem.__get_next_serial()
+        self.setStatus(self.getStatus()[0]) # since the status may change
     
     def getSerialNumber(self):
         return self.__serialNumber
@@ -89,18 +88,21 @@ class DeliveryItem:
         elif self.__status == 'D':
             return 'Delivered'
         else:
-            return 'Receiver'
+            return 'Received'
     
     def getDate(self):
         return self.date
     
+    def hasInsurance(DeliveryItem):
+        return DeliveryItem.__insurance
+    
     def addInsurance(self):
-        if self.getInsurance == False:
+        if not DeliveryItem.hasInsurance(self):
             self.setInsurance(True)
             self.setCost(self.__cost + 3)
     
     def cancelInsurance(self):
-        if self.getInsurance == True:
+        if DeliveryItem.hasInsurance(self):
             self.setInsurance(False)
             self.setCost(self.__cost - 3)
             
