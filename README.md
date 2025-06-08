@@ -44,7 +44,7 @@ The Delivery Management System is designed to help delivery companies efficientl
 - **`Package`**: Inherits from `DeliveryItem`; includes dimensions, weight, and volume.
 - **`Envelope`**: Inherits from `DeliveryItem`; includes predefined size options.
 - **`Driver`**: Stores driver info, delivery zone, and manages delivery assignments.
-- **`Fadi_Louise`**: Main application class with the console-based menu interface.
+- **`Main`**: Main application class with the console-based menu interface.
 
 ---
 
