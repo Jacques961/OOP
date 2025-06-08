@@ -3,16 +3,17 @@ from DeliveryItem import DeliveryItem
 class Envelope(DeliveryItem):
     
     def __init__(self, __senderName: str = None, __receiverName: str = None, __senderPostalCode: int = 10000, 
-                 __receiverPostalCode: int = 10000, __cost: float = 2.0 , __insurance: bool = False,
+                 __receiverPostalCode: int = 10000, __insurance: bool = False,
                  __size: str = None):
-        super().__init__(__senderName, __receiverName, __senderPostalCode, __receiverPostalCode, __cost, __insurance)
+        super().__init__(__senderName, __receiverName, __senderPostalCode, __receiverPostalCode, 0.0, __insurance)
         self.setSize(__size)
         self.__setCost()
     
     def setSize(self, __size: str):
-        if __size in ["A2", "A6", "A7", "A9", "4 square", " 5 square"]:
+        if __size in ["A2", "A6", "A7", "A9", "4 square", "5 square"]:
             self.__size = __size
-        self.__size = "A2"
+        else:
+            self.__size = "A2"
     
     def getSize(self):
         return self.__size

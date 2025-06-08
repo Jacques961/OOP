@@ -5,8 +5,8 @@ from typing import List
 
 class Driver:
     def __init__(self, __name: str = None, __zone: list = (10000, 50000), __deliveries: list = None, __carRegistrationNumber: str = None, 
-                 __maxWeight: float = 500.0, __maxVolume: float = 50.0, __currentWeight: float = 0.0, __currentVolume: float = 0.0):
-        self.setDriver(__name, __zone, __deliveries, __carRegistrationNumber, __maxWeight, __maxVolume, __currentWeight, __currentVolume)
+                 __maxWeight: float = 500.0, __maxVolume: float = 50.0):
+        self.setDriver(__name, __zone, __deliveries, __carRegistrationNumber, __maxWeight, __maxVolume, 0.0, 0.0)
         
     def setDriver(self, __name: str = None, __zone: list = (10000, 50000), __deliveries: list = None, __carRegistrationNumber: str = None, 
                   __maxWeight: float = 500.0, __maxVolume: float = 50.0, __currentWeight: float = 0.0, __currentVolume: float = 0.0):
@@ -30,8 +30,11 @@ class Driver:
         self.__zone = __zone
         
     def setDeliveries(self, __deliveries: List[DeliveryItem]):
-        if __deliveries is None:
+        if not hasattr(self, '__deliveries'):
             self.__deliveries = []
+        
+        if __deliveries is None:
+            print("Deliveries list is None. Not Assigned")
             return
             
         # if self.__deliveries() is None:
@@ -49,29 +52,31 @@ class Driver:
             return False
         
         # check for the zone
-        if (self.getZone()[0] in range(delivery.getSenderPostalCode(), delivery.getReceiverPostalCode() + 1)
-            and self.getZone()[1] in range (delivery.getSenderPostalCode(), delivery.getReceiverPostalCode() + 1)):
+        if (delivery.getReceiverPostalCode() < self.getZone()[0] or
+            delivery.getReceiverPostalCode() > self.getZone()[1]):
             print("Zone is not of driver responsibility")
             return False
         
         # check for the weight and volume
         if isinstance(delivery, Envelope):
-            if ((Envelope)(delivery)).getSize() is None:
+            if delivery.getSize() is None:
                 print("Envelope is Empty. Not Delivered")
                 return False
             self.__deliveries.append(delivery)
             delivery.setStatus('A')
+            print("Envelope is Assigned")
             return True
                 
         if isinstance(delivery, Package):
-            if (((Package)(delivery)).getVolume() + self.getCurentVolume() > self.getMaxVolume() 
-                and ((Package)(delivery)).getWeight() + self.getCurentWeight() > self.getMaxWeight()):
+            if ((delivery.getVolume() + self.getCurentVolume()) > self.getMaxVolume() 
+                or (delivery.getWeight() + self.getCurentWeight()) > self.getMaxWeight()):
                 print("Package is too heavy or too big. Not Delivered")
                 return False
             self.__deliveries.append(delivery)
-            self.setCurentWeight(((Package)(delivery)).getWeight() + self.getCurentWeight())
-            self.setCurentVolume(((Package)(delivery)).getVolume() + self.getCurentVolume())
+            self.setCurentWeight(delivery.getWeight() + self.getCurentWeight())
+            self.setCurentVolume(delivery.getVolume() + self.getCurentVolume())
             delivery.setStatus('A')
+            print("Package is Assigned")
             return True
     
     def accomplishedDelivery(self, deliveryNb: int):
@@ -80,17 +85,21 @@ class Driver:
             return False
         
         for item in self.getDeliveries():
-            if (DeliveryItem)(item).getSerialNumber() == deliveryNb:
-                if isinstance((DeliveryItem)(item), Envelope):
-                    ((Envelope)(item)).setStatus('D')
+            if item.getSerialNumber() == deliveryNb:
+                if isinstance(item, Envelope):
+                    item.setStatus('D')
                     self.__deliveries.remove(item)
+                    print("Envelope is Delivered")
                     return True
-                if isinstance((DeliveryItem)(item), Package):
-                    ((Package)(item)).setStatus('D')
+                if isinstance(item, Package):
+                    item.setStatus('D')
                     self.__deliveries.remove(item)
-                    self.setCurentWeight(self.getCurentWeight() - ((Package)(item)).getWeight())
-                    self.setCurentVolume(self.getCurentVolume() - ((Package)(item)).getVolume())
+                    self.setCurentWeight(self.getCurentWeight() - item.getWeight())
+                    self.setCurentVolume(self.getCurentVolume() - item.getVolume())
+                    print("Package is Delivered")
                     return True
+        print("Delivery not found")
+        return False
                 
     def setCarRegistrationNumber(self, __carRegistrationNumber: str):
         if __carRegistrationNumber is None or len(__carRegistrationNumber) == 0:
@@ -143,6 +152,6 @@ class Driver:
     
     def __repr__(self):
         return (self.getName() + '\nActive Zone: ' + (str)(self.getZone()) 
-                + '\Car: ' + (str)(self.getCarRegistrationNumber()) + '\Max Weight: ' + (str)(self.getMaxWeight())
+                + '\nCar: ' + (str)(self.getCarRegistrationNumber()) + '\nMax Weight: ' + (str)(self.getMaxWeight())
                 + ' - Max Volume: ' + (str)(self.getMaxVolume()))
     

@@ -25,7 +25,9 @@ class DeliveryItem:
         self.setSenderPostalCode(__senderPostalCode)
         self.setCost(__cost)
         self.setInsurance(__insurance)
+        self.__status = 'R'
         self.setSerialData()
+        
     
     def setSenderName(self, __senderName: str):
         self.__senderName = __senderName
@@ -100,11 +102,16 @@ class DeliveryItem:
         if not DeliveryItem.hasInsurance(self):
             self.setInsurance(True)
             self.setCost(self.__cost + 3)
+            print("inusrance added")
     
     def cancelInsurance(self):
         if DeliveryItem.hasInsurance(self):
             self.setInsurance(False)
-            self.setCost(self.__cost - 3)
+            if self.getCost() < 3:
+                self.setCost(2.0)
+            else:
+                self.setCost(self.__cost - 3)
+            print("insurance cancelled")
             
     def __repr__(self): # like the toString method in JAVA
         
