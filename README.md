@@ -64,4 +64,30 @@ The Delivery Management System is designed to help delivery companies efficientl
 - Choose a driver for assignment.
 - The system verifies:
   - Delivery zone match.
-  - Weight and volume ca
+  - Weight and volume capacity.
+
+### Tracking Deliveries
+- View items filtered by status: Received, Assigned, Delivered.
+- Check current load and capacity for each driver.
+
+---
+
+## Requirements
+
+- Java 8 or later
+- Compile and run using any standard Java IDE or command line
+
+---
+
+## License
+
+This project is for educational/demo purposes. You may modify and adapt it as needed.
+
+---
+
+## Contact
+
+For questions or suggestions, please open an issue or create a pull request on this repository.
+
+---
+
